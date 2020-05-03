@@ -1,5 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <iterator>
+#include <array>
+#include <vector>
 
 using namespace std;
 
@@ -79,7 +83,7 @@ int main() {
 
 
 
-    //----------------------------[char I/O]-----------------------------
+    cout << endl << "----------------------------[char I/O]-----------------------------" << endl;
     string ffile2_name("c:\\data3.txt");
     //fstream   ffile2(ffile2_name, std::ios::in | std::ios::out);
     fstream     ffile2;
@@ -132,10 +136,37 @@ int main() {
          }
      }
     ffile2.close();
-    //---------------------------------------------------------------
+    cout << endl << "----------------------------[char I/O]-----------------------------" << endl;
 
 
 
+    cout << endl << "----------------------------[bulk I/O]-----------------------------" << endl;
+    string ffile3_name("c:\\data4.txt");
+    fstream   ffile3(ffile3_name, std::ios::in | std::ios::out);
+    char ffile3_arr[10] = {0,1,2,3,4,5,6,7,8,9};
+    char ffile3_arr_in[10] = {0,0,0,0,0,0,0,0,0,0};;
+
+    auto print_ffile3_arr_in = [&](){
+        for (int i = 0; i < sizeof(ffile3_arr_in); i++) { cout << char(ffile3_arr_in[i] /*+ 0x30*/) << ' ';}
+        cout << endl;
+    };
+
+    if(!ffile3) cerr << "failed to open " << ffile3_name << endl;
+
+    ffile3.write(ffile3_arr, sizeof(ffile3_arr));           ffile3 << '\n';
+    ffile3.write(ffile3_arr, sizeof(ffile3_arr));           ffile3 << '\n';
+
+
+
+    ffile3.seekg(ios::beg);
+    ffile3.read(ffile3_arr_in , sizeof(ffile3_arr_in));
+    cout << "num of chars readed from file = " << ffile3.gcount() << endl;
+    transform(begin(ffile3_arr_in), end(ffile3_arr_in),
+              begin(ffile3_arr_in),
+              [](char arg) { return arg +=0x30;});
+    print_ffile3_arr_in();
+
+    cout << endl << "----------------------------[bulk I/O]-----------------------------" << endl;
     std::cout << "Terminated..." << std::endl;
     return 0;
 }
