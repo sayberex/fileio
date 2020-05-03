@@ -126,6 +126,7 @@ int main() {
          cout << "ffile2.rdstate() = " << ffile2.rdstate() << endl;
          while (!ffile2.eof())
          {
+             //do not forget also about peek wich extracts sym but do not increment input stream indicator
              cout << ffile2.get() << ' ';
          }
 
@@ -167,6 +168,50 @@ int main() {
     print_ffile3_arr_in();
 
     cout << endl << "----------------------------[bulk I/O]-----------------------------" << endl;
+
+
+    cout << endl << "----------------------------[text I/O]-----------------------------" << endl;
+    string    ffile4_name("c:\\data5.txt");
+    fstream   ffile4(ffile4_name, std::ios::in | std::ios::out);
+    string    content="0123456789";
+    #define CHR_RCV_BUF_SIZE 1024u
+    char      cRcvData[CHR_RCV_BUF_SIZE];
+    string    strRcvdata;
+
+    if (!ffile4) cerr << "can't open file " << ffile4_name << endl;
+
+    ffile4  << content << endl
+            << content << endl
+            << content << endl;
+
+
+    // read from file first approach
+    ffile4.seekg(ios::beg);
+    // get can be also used for this purposes but still there is a difference beetwen them
+    // while (ffile4.get(cRcvData, CHR_RCV_BUF_SIZE))
+    while (ffile4.getline(cRcvData, CHR_RCV_BUF_SIZE))
+    {
+        cout << "amount of data being read for this iteration = " << ffile4.gcount() << ' ';
+        cRcvData[ffile4.gcount()] = 0;
+        puts(cRcvData);
+    }
+
+    // read from file second approach
+    ffile4.clear();
+    ffile4.seekg(ios::beg);
+    while(ffile4 >> strRcvdata) { cout << strRcvdata << endl;}
+
+    //ignore skeep char sequence till specefied character
+    ffile4.clear();
+    ffile4.seekg(ios::beg);
+    ffile4.ignore(1024,'6');
+    cout << ffile4.tellg() << endl;
+    ffile4 >> strRcvdata;  cout << strRcvdata << endl;
+    //cout << ffile4.tellg() << endl;
+    //cout << std::numeric_limits<std::streamsize>::max() << endl;
+    cout << endl << "----------------------------[text I/O]-----------------------------" << endl;
+
+    //positioning iterators
     std::cout << "Terminated..." << std::endl;
     return 0;
 }
