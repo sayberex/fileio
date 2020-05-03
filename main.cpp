@@ -5,6 +5,7 @@
 #include <array>
 #include <vector>
 #include <sstream>
+#include <io.h>
 
 using namespace std;
 
@@ -252,6 +253,38 @@ int main() {
 
     cout << endl << "-----------------[positioning and stream iterators]----------------" << endl;
 
+    /*
+     * https://www.drdobbs.com/cpp/iterators-and-iostreams/232600539
+     * #include <iostream>
+#include <fstream>
+#include <iterator>
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+    ofstream temp_out("temp.dat", std::ios_base::binary );
+    for ( int i = 0 ; i < 256 ; i++ )
+        temp_out.put( (char) i );
+    temp_out.close();
+    ifstream temp_in("temp.dat", std::ios_base::binary );
+    char last = -1;
+    int count = 0;
+    istream_iterator<char> ii( temp_in );
+    while ( ii != std::istream_iterator<char>() ) {
+        char c = *ii++;
+        count++;
+        if ( c != char(last+1) )
+            cout << "Error on character number: " << (int) last << endl;
+        last = c;
+    }
+    cout << "Count: " << count << endl;
+    return 0;
+}
+
+     istreambuf_iterator<char> jj(temp_in.rdbuf());
+while ( ii != std::istreambuf_iterator<char>() ) {
+     */
+
 
     cout.unsetf(ios::showbase | ios::hex);
     cout << endl << "-------------------[read whole file into string]-------------------" << endl;
@@ -276,10 +309,25 @@ int main() {
     ffile6.seekg(ios::beg);
     file6_content2 << ffile6.rdbuf();
     cout << file6_content2.str();
-
     cout << endl << "-------------------[read whole file into string]-------------------" << endl;
 
-    //read whole file in string
+
+    cout << endl << "-------------------[read whole file into vector]-------------------" << endl;
+    string   ffile7_name("c:\\data7.txt");
+    ifstream ffile7(ffile7_name);
+
+    vector<string> lines;
+    ffile7.clear();
+    ffile7.seekg(0, ios::beg);
+    istream_iterator<string> it(ffile7);
+    istream_iterator<string> it_eof;
+
+
+    while (it != it_eof) { lines.push_back(*it++); }
+    for (auto el : lines) {cout << el << endl; }
+
+    cout << endl << "-------------------[read whole file into vector]-------------------" << endl;
+
     std::cout << "Terminated..." << std::endl;
     return 0;
 }
