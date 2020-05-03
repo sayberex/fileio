@@ -4,6 +4,7 @@
 #include <iterator>
 #include <array>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -250,6 +251,33 @@ int main() {
     puts(filebuffer);
 
     cout << endl << "-----------------[positioning and stream iterators]----------------" << endl;
+
+
+    cout.unsetf(ios::showbase | ios::hex);
+    cout << endl << "-------------------[read whole file into string]-------------------" << endl;
+    string    ffile6_name("c:\\data7.txt");
+    ifstream  ffile6(ffile6_name);
+    string    file6_content;
+    stringstream file6_content2;
+    if (!ffile6) cerr << "can not open file = " << ffile4_name << endl;
+
+    //get file size
+    ffile6.seekg(0, ios::end);   int size = ffile6.tellg();   cout << "filze size = " << size << endl;   ffile6.seekg(ios::beg);
+    //in oreder to avoid a lot of relocation during file reading process allocate memory in order to fit whole file size
+    file6_content.reserve(size);
+
+    // Сброс данного флага необходим для отключения пропуска пробельных символов при форматном вводе через поток.
+    ffile6.unsetf(ios::skipws); //  it is necessary yo let receive space characters during format input
+    file6_content.assign(istream_iterator<char>(ffile6), istream_iterator<char>());
+    cout << file6_content << endl;
+
+    // read into stream
+    ffile6.clear();
+    ffile6.seekg(ios::beg);
+    file6_content2 << ffile6.rdbuf();
+    cout << file6_content2.str();
+
+    cout << endl << "-------------------[read whole file into string]-------------------" << endl;
 
     //read whole file in string
     std::cout << "Terminated..." << std::endl;
