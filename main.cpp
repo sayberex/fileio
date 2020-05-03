@@ -211,7 +211,47 @@ int main() {
     //cout << std::numeric_limits<std::streamsize>::max() << endl;
     cout << endl << "----------------------------[text I/O]-----------------------------" << endl;
 
-    //positioning iterators
+
+
+    cout << endl << "-----------------[positioning and stream iterators]----------------" << endl;
+    string    ffile5_name("c:\\data6.txt");
+    fstream   ffile5(ffile5_name, std::ios::in | std::ios::out);
+    string    content2="0123456789";
+    //#define CHR_RCV_BUF_SIZE 1024u
+    //char      cRcvData[CHR_RCV_BUF_SIZE];
+    //string    strRcvdata;
+    char filebuffer[1024];
+
+    istream_iterator<char> in_begin(ffile5);
+    ostream_iterator<char> out_egin(ffile5);
+
+    istream_iterator<char> in_end();
+    ostream_iterator<char> out_end();
+
+    if (!ffile5) cerr << "can't open file " << ffile5_name << endl;
+
+    cout << "position of in/out indicators before file write      = " << ffile5.tellg() << '/' << ffile5.tellp() << endl;
+    ffile5  << content2 << endl;
+    cout << "position of in/out indicators after write 10 sym     = " << ffile5.tellg() << '/' << ffile5.tellp() << endl;
+
+    //seekp and seeg sets both indicators
+    ffile5.seekg(ios::beg);
+    cout << "position of in/out indicators after seekg            = " << ffile5.tellg() << '/' << ffile5.tellp() << endl;
+    //cout << "position of input indicator before file write      = " << ffile5.tellg() << endl;
+
+    //move in/out pointer to char '3'
+    ffile5.ignore(std::numeric_limits<std::streamsize>::max(), '3');
+    cout << "position of in/out indicators after ignore(x,'3')    = " << ffile5.tellg() << '/' << ffile5.tellp() << endl;
+    cout << "current sym is = " << std::hex << std::showbase <<ffile5.peek() << endl;
+
+    cout << *(in_begin++) << *(in_begin++) << endl;
+
+    copy(istream_iterator<char>(ffile5), istream_iterator<char>(), begin(filebuffer));
+    puts(filebuffer);
+
+    cout << endl << "-----------------[positioning and stream iterators]----------------" << endl;
+
+    //read whole file in string
     std::cout << "Terminated..." << std::endl;
     return 0;
 }
